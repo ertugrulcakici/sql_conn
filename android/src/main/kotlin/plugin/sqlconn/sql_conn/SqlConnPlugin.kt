@@ -19,7 +19,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-/// data type seperator |$&|%#|
+/// type name seperator :
+/// type column seperator |
+/// type seperator |$&|%#|
 /// data seperator #%
 /// row seperator &$ 
 /** SqlConnPlugin */
@@ -117,11 +119,11 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
                 val colCount: Int =
                     resultSet.getMetaData().getColumnCount()  // <-- To get column count
                 val colNameList = arrayListOf<String>()
-                var colTypeList = arrayListOf<String>()
+                var colData = arrayListOf<String>()
                 val dataList = arrayListOf<Any>()
 
                 for (i in 1..(colCount)) {
-                    colTypeList.add(resultSet.getMetaData().getColumnTypeName(i).toString())
+                    colData.add(resultSet.getMetaData().getColumnName(i).toString()+":"+resultSet.getMetaData().getColumnTypeName(i).toString()) 
                     colNameList.add(resultSet.getMetaData().getColumnName(i).toString())
                 }
             
@@ -145,7 +147,7 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
                 }
                 var fResult: String = "";
                 if (dataList.isNotEmpty()) {
-                    fResult += colTypeList.joinToString("|")
+                    fResult += colData.joinToString("|")
                     fResult += "|$&|%#|";
                 } 
                 fResult += dataList.joinToString("&$")
