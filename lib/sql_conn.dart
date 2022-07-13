@@ -6,10 +6,9 @@ class SqlConn {
   static const MethodChannel _channel =
       MethodChannel('plugin.sqlconn.sql_conn/sql_conn');
 
-  static bool _isConnected = false;
+  static bool isConnected = false;
 
   /// To check if application is connected with database
-  static bool get isConnected => _isConnected;
 
   /// To connect to the database
   ///
@@ -35,7 +34,7 @@ class SqlConn {
       "databaseName": databaseName,
       "username": username,
       "password": password,
-      "timeout":timeout,
+      "timeout": timeout,
     };
     try {
       _isConnected = await _channel.invokeMethod("connectDB", args);
