@@ -6,7 +6,8 @@ class SqlConn {
   static const MethodChannel _channel =
       MethodChannel('plugin.sqlconn.sql_conn/sql_conn');
 
-  static bool isConnected = false;
+  static bool _isConnected = false;
+  static bool get isConnected => _isConnected;
 
   /// To check if application is connected with database
 
@@ -55,6 +56,9 @@ class SqlConn {
     try {
       return await _channel.invokeMethod("readData", args);
     } catch (error) {
+      if (error.toString().contains("Not connected")) {
+        _isConnected = false;
+      }
       rethrow;
     }
   }
@@ -71,6 +75,9 @@ class SqlConn {
     try {
       return await _channel.invokeMethod("writeData", args);
     } catch (error) {
+      if (error.toString().contains("Not connected")) {
+        _isConnected = false;
+      }
       rethrow;
     }
   }
@@ -80,6 +87,9 @@ class SqlConn {
     try {
       _isConnected = await _channel.invokeMethod("disconnectDB");
     } catch (error) {
+      if (error.toString().contains("Not connected")) {
+        _isConnected = false;
+      }
       rethrow;
     }
   }

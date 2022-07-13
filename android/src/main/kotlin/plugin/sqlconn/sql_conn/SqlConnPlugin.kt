@@ -112,6 +112,10 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
         try {
             val query: String = call.argument<String>("query").toString()
             if (connection != null) {
+                if (connection!!.isClosed()){
+                    connection?.let {connection = null}
+                    throw Exception("Not connected")
+                }
                 var statement: Statement? = null
                 statement = connection!!.createStatement()
                 val resultSet: ResultSet = statement.executeQuery(query)
@@ -153,7 +157,7 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
                 fResult += dataList.joinToString("&$")
                 result.success(fResult)
             } else {
-                throw Exception("Database is not connected")
+                throw Exception("Not connected")
             }
         } catch (e: Throwable) {
             result.error("ERROR", e.message.toString(), null)
@@ -164,12 +168,16 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
         try {
             val query: String = call.argument<String>("query").toString()
             if (connection != null) {
+                if (connection!!.isClosed()){
+                    connection?.let {connection = null}
+                    throw Exception("Not connected")
+                }
                 var statement: Statement? = null
                 statement = connection!!.createStatement()
                 statement.execute(query)
                 result.success(true)
             } else {
-                throw Exception("Database is not connected")
+                throw Exception("Not connected")
             }
         } catch (e: Throwable) {
             result.error("ERROR", e.message.toString(), null)
@@ -181,9 +189,12 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
             if (connection != null) {
                 android.util.Log.i(TAG, "onDetachedFromEngine: Closing SQL Connection")
                 connection!!.close()
+                if (connection!!.isClosed()){
+                    connection?.let {connection = null}
+                }
                 result.success(false)
             } else {
-                throw  Exception("Database is not connected")
+                throw  Exception("Not connected")
             }
         } catch (e: Throwable) {
             result.error("ERROR", e.message.toString(), null)
