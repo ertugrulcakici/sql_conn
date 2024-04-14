@@ -160,7 +160,7 @@ class SqlConnPlugin : FlutterPlugin, MethodCallHandler {
                 throw Exception("Not connected")
             }
         } catch (e: Throwable) {
-            result.error("ERROR", e.message.toString(), null)
+            result.error("ERROR2", e.message.toString(), null)
         }
     }
 
